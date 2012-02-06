@@ -406,10 +406,10 @@ alpm_handle_t *alpm_init(void) /* {{{ */
 
 			if(strcmp(section, "options") != 0) {
 				if(!cfg.skiprepos && !alpm_list_find_str(cfg.ignore.repos, section)) {
-					alpm_db_register_sync(pmhandle, section, 0);
+					alpm_register_syncdb(pmhandle, section, 0);
 					cwr_printf(LOG_DEBUG, "registering alpm db: %s\n", section);
 				}
-		}
+			}
 		} else {
 			char *key, *token;
 
@@ -426,7 +426,7 @@ alpm_handle_t *alpm_init(void) /* {{{ */
 		}
 	}
 
-	db_local = alpm_option_get_localdb(pmhandle);
+	db_local = alpm_get_localdb(pmhandle);
 
 	free(section);
 	fclose(fp);
@@ -457,7 +457,7 @@ int alpm_pkg_is_foreign(alpm_pkg_t *pkg) /* {{{ */
 
 	pkgname = alpm_pkg_get_name(pkg);
 
-	for(i = alpm_option_get_syncdbs(pmhandle); i; i = alpm_list_next(i)) {
+	for(i = alpm_get_syncdbs(pmhandle); i; i = alpm_list_next(i)) {
 		if(alpm_db_get_pkg(i->data, pkgname)) {
 			return 0;
 		}
@@ -473,7 +473,7 @@ const char *alpm_provides_pkg(const char *pkgname) /* {{{ */
 	static pthread_mutex_t alpmlock = PTHREAD_MUTEX_INITIALIZER;
 
 	pthread_mutex_lock(&alpmlock);
-	for(i = alpm_option_get_syncdbs(pmhandle); i; i = alpm_list_next(i)) {
+	for(i = alpm_get_syncdbs(pmhandle); i; i = alpm_list_next(i)) {
 		alpm_db_t *db = i->data;
 		if(alpm_find_satisfier(alpm_db_get_pkgcache(db), pkgname)) {
 			dbname = alpm_db_get_name(db);
