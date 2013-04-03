@@ -739,7 +739,8 @@ void *download(CURL *curl, void *arg) /* {{{ */
 	queryresult = task_query(curl, arg);
 	if(!queryresult) {
 		cwr_fprintf(stderr, LOG_BRIEF, BRIEF_ERR "\t%s\t", (const char*)arg);
-		cwr_fprintf(stderr, LOG_ERROR, "no results found for %s\n", (const char*)arg);
+		cwr_fprintf(stderr, LOG_ERROR, "no results found for %s%s%s\n", colstr->pkg,
+				(const char*)arg, colstr->nc);
 		return NULL;
 	}
 
